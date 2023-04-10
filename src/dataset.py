@@ -188,7 +188,7 @@ class ExtFUNSDDs(Dataset):
     ## Converting stuffs to tensor
     input_ids = torch.tensor(input_ids)
     bbox_according_to_tokenizer = torch.tensor(bbox_according_to_tokenizer)
-    #labels_according_to_tokenizer = torch.tensor(labels_according_to_tokenizer)
+    labels_according_to_tokenizer = torch.tensor(labels_according_to_tokenizer)
     attention_mask = torch.tensor(attention_mask)
 
     return {"input_ids" : input_ids,  "labels" : labels, "attention_mask" : attention_mask, "bboxes" : bbox_according_to_tokenizer,  # labels_according_to_tokenizer
