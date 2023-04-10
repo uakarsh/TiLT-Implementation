@@ -1,0 +1,14 @@
+site_name: TiLT
+site_url: https://uakarsh.github.io/tilt
+copyright: MIT
+theme:
+  name: "material"
+  palette:
+    primary: "red"
+    accent: "red"
+
+repo_name: uakarsh/TiLT-Implementation
+repo_url: https://github.com/uakarsh/TiLT-Implementation
+
+nav:
+    - Home: pad_tokens_start_idx.md

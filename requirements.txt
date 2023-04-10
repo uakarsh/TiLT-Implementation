@@ -1,0 +1,6 @@
+transformers
+datasets
+sentencepiece
+pytorch_lightning
+seqeval
+evaluate
