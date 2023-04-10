@@ -5,6 +5,7 @@ import copy
 from transformers.models import t5
 from transformers import AutoModel
 
+
 class T5LayerNorm(nn.Module):
     def __init__(self, hidden_size, eps=1e-6):
         """
@@ -108,6 +109,9 @@ class T5Attention(nn.Module):
         self.v = nn.Linear(self.d_model, self.inner_dim, bias=False)
         self.o = nn.Linear(self.inner_dim, self.d_model, bias=False)
 
+        '''
+        Here is where the change lies, i.e adding the relative_horizontal_bias as well as the relative_vertical_bias
+        '''
         if self.has_relative_attention_bias:
             self.relative_attention_bias = nn.Embedding(
                 self.relative_attention_num_buckets, self.n_heads)
@@ -140,8 +144,8 @@ class T5Attention(nn.Module):
         relative_buckets = 0
         if bidirectional:
             num_buckets //= 2
-            relative_buckets += (relative_position >
-                                 0).to(torch.long) * num_buckets
+            relative_buckets += (relative_position
+                                 > 0).to(torch.long) * num_buckets
             relative_position = torch.abs(relative_position)
         else:
             relative_position = - \
@@ -242,8 +246,8 @@ class T5Attention(nn.Module):
         real_seq_length = seq_length
 
         if past_key_value is not None:
-            assert(len(past_key_value) ==
-                   2), f"past_key_value should have 2 past states: keys and values. Got { len(past_key_value)} past states"
+            assert(len(past_key_value)
+                   == 2), f"past_key_value should have 2 past states: keys and values. Got { len(past_key_value)} past states"
             real_seq_length += past_key_value[0].shape[2] if query_length is None else key_value_states.shape[1]
 
         key_length = real_seq_length if key_value_states is None else key_value_states.shape[
@@ -501,6 +505,7 @@ class T5Block(nn.Module):
 
 class T5Stack(t5.modeling_t5.T5Stack):
     def __init__(self, config, embed_tokens=None):
+        '''Just changes in the `T5Block`, so have to update it as per our implementation'''
         super().__init__(config=config, embed_tokens=embed_tokens)
         self.block = nn.ModuleList(
             [T5Block(config, has_relative_attention_bias=bool(i == 0))
@@ -535,7 +540,7 @@ class T5Model(t5.modeling_t5.T5Model):
         self.config = config
         encoder_config = copy.deepcopy(config)
         decoder_config = copy.deepcopy(config)
-        decoder_config.update(dict(is_decoder = True))
+        decoder_config.update(dict(is_decoder=True))
 
         self.encoder = T5Stack(encoder_config, self.shared)
         self.decoder = T5Stack(decoder_config, self.shared)
@@ -553,7 +558,6 @@ class T5Model(t5.modeling_t5.T5Model):
 
 class T5ForConditionalGeneration(t5.modeling_t5.T5ForConditionalGeneration):
     def __init__(self, config):
-
         '''
         It is similar to the T5ForConditionalGeneration described in the `hugging_face` repository, however I had to tweak it a bit, 
         since there is an addition of the `relative_horizontal_bias` as well as `relative_vertical_bias` in the `T5Attention` class, and also
@@ -565,7 +569,8 @@ class T5ForConditionalGeneration(t5.modeling_t5.T5ForConditionalGeneration):
         self.config = config
         encoder_config = copy.deepcopy(config)
         decoder_config = copy.deepcopy(config)
-        decoder_config.update(dict(is_decoder = True)) ## In the pretrained version, the decoder config, the `is_decoder` option is True
+        # In the pretrained version, the decoder config, the `is_decoder` option is True
+        decoder_config.update(dict(is_decoder=True))
 
         self.encoder = T5Stack(encoder_config, self.shared)
         self.decoder = T5Stack(decoder_config, self.shared)
@@ -619,18 +624,19 @@ class T5ForConditionalGenerationAbstractive(t5.modeling_t5.T5ForConditionalGener
         self.config = config
         encoder_config = copy.deepcopy(config)
         decoder_config = copy.deepcopy(config)
-        decoder_config.update(dict(is_decoder = True)) ## In the pretrained version, the decoder config, the `is_decoder` option is True
+        # In the pretrained version, the decoder config, the `is_decoder` option is True
+        decoder_config.update(dict(is_decoder=True))
 
         self.encoder = T5Stack(encoder_config, self.shared)
         self.decoder = T5Stack(decoder_config, self.shared)
-        self.lm_head = nn.Linear(in_features = config.d_model, out_features = config.num_classes, bias = False)
+        self.lm_head = nn.Linear(in_features=config.d_model,
+                                 out_features=config.num_classes, bias=False)
 
         if config.load_weights:
             self.load_weights()
         else:
             self.post_init()
             print("Initialization done without loading the weights")
-        
 
     def forward(self, **kwargs):
         '''
