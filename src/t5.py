@@ -553,6 +553,13 @@ class T5Model(t5.modeling_t5.T5Model):
 
 class T5ForConditionalGeneration(t5.modeling_t5.T5ForConditionalGeneration):
     def __init__(self, config):
+
+        '''
+        It is similar to the T5ForConditionalGeneration described in the `hugging_face` repository, however I had to tweak it a bit, 
+        since there is an addition of the `relative_horizontal_bias` as well as `relative_vertical_bias` in the `T5Attention` class, and also
+        the entire approach is generative in nature, so maybe it can be used in some other dataset, such as Question Answering
+        '''
+
         super().__init__(config=config)
 
         self.config = config
@@ -570,9 +577,13 @@ class T5ForConditionalGeneration(t5.modeling_t5.T5ForConditionalGeneration):
             print("Initialization done without loading the weights")
 
     def forward(self, **kwargs):
+        '''Same as mentioned in the hugging face's implementation'''
         return super().forward(**kwargs)
 
     def load_weights(self):
+        '''
+        Loads the weights from the pretrained model
+        '''
         dummy_model = AutoModel.from_pretrained(self.config._name_or_path)
         self.load_state_dict(dummy_model.state_dict(), strict=False)
         print("Weights loaded successfully!")
@@ -580,16 +591,29 @@ class T5ForConditionalGeneration(t5.modeling_t5.T5ForConditionalGeneration):
 
 class T5EncoderModel(t5.modeling_t5.T5ForConditionalGeneration):
     def __init__(self, config):
+        '''
+        It is similar to the T5EncoderModel described in the `hugging_face` repository, however I had to tweak it a bit, 
+        since there is an addition of the `relative_horizontal_bias` as well as `relative_vertical_bias` in the `T5Attention` class
+        '''
         super().__init__(config=config)
         self.encoder = T5Stack(config, self.shared)
         self.post_init()
 
     def forward(self, **kwargs):
+        '''Similar to the `T5EncoderModel` mentioned in the hugging face's t5 implementation'''
         return super().forward(**kwargs)
 
 
 class T5ForConditionalGenerationAbstractive(t5.modeling_t5.T5ForConditionalGeneration):
     def __init__(self, config):
+        '''
+        T5ForConditionalGenerationAbstractive is a T5ForConditionalGeneration model with a linear layer on top of the decoder output, 
+        where the decoder output is the output of the last layer of the decoder, followed by a linear layer projection.
+
+        It is similar to T5ForConditionalGeneration, however, it is based on a concept of generative answer, and this was what I did earlier,
+        however, the authors have used an abstractive approach, and so I had to tweak somethinig, and essentially, it is the `self.lm_head`
+        '''
+
         super().__init__(config=config)
 
         self.config = config
@@ -609,9 +633,17 @@ class T5ForConditionalGenerationAbstractive(t5.modeling_t5.T5ForConditionalGener
         
 
     def forward(self, **kwargs):
+        '''
+        Forward pass of T5ForConditionalGenerationAbstractive. It is similar to T5ForConditionalGeneration, however, it is based on a concept of generative answer, 
+        and this was what I did earlier,
+        '''
         return super().forward(**kwargs)
 
     def load_weights(self):
+        '''
+        Load the weights of the T5ForConditionalGenerationAbstractive model
+        It is adaptable to both the `t5-base` and `t5-large` configuration settings
+        '''
         dummy_model = AutoModel.from_pretrained(self.config._name_or_path)
         self.load_state_dict(dummy_model.state_dict(), strict=False)
         print("Weights loaded successfully!")
