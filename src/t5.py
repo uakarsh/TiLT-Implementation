@@ -599,7 +599,7 @@ class T5ForConditionalGenerationAbstractive(t5.modeling_t5.T5ForConditionalGener
 
         self.encoder = T5Stack(encoder_config, self.shared)
         self.decoder = T5Stack(decoder_config, self.shared)
-        self.lm_head = nn.Linear(in_features = config.d_model, out_features = config.get('num_classes', 7), bias = False)
+        self.lm_head = nn.Linear(in_features = config.d_model, out_features = config.num_classes, bias = False)
 
         if config.load_weights:
             self.load_weights()
