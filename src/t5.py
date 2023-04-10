@@ -586,3 +586,32 @@ class T5EncoderModel(t5.modeling_t5.T5ForConditionalGeneration):
 
     def forward(self, **kwargs):
         return super().forward(**kwargs)
+
+
+class T5ForConditionalGenerationAbstractive(t5.modeling_t5.T5ForConditionalGeneration):
+    def __init__(self, config):
+        super().__init__(config=config)
+
+        self.config = config
+        encoder_config = copy.deepcopy(config)
+        decoder_config = copy.deepcopy(config)
+        decoder_config.update(dict(is_decoder = True)) ## In the pretrained version, the decoder config, the `is_decoder` option is True
+
+        self.encoder = T5Stack(encoder_config, self.shared)
+        self.decoder = T5Stack(decoder_config, self.shared)
+        self.lm_head = nn.Linear(in_features = config.d_model, out_features = config.get('num_classes', 7), bias = False)
+
+        if config.load_weights:
+            self.load_weights()
+        else:
+            self.post_init()
+            print("Initialization done without loading the weights")
+        
+
+    def forward(self, **kwargs):
+        return super().forward(**kwargs)
+
+    def load_weights(self):
+        dummy_model = AutoModel.from_pretrained(self.config._name_or_path)
+        self.load_state_dict(dummy_model.state_dict(), strict=False)
+        print("Weights loaded successfully!")
