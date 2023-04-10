@@ -191,5 +191,5 @@ class ExtFUNSDDs(Dataset):
     labels_according_to_tokenizer = torch.tensor(labels_according_to_tokenizer)
     attention_mask = torch.tensor(attention_mask)
 
-    return {"input_ids" : input_ids,  "labels" : labels, "attention_mask" : attention_mask, "bboxes" : bbox_according_to_tokenizer,  # labels_according_to_tokenizer
+    return {"input_ids" : input_ids,  "labels" : labels_according_to_tokenizer, "attention_mask" : attention_mask, "bboxes" : bbox_according_to_tokenizer,  # labels_according_to_tokenizer
             "pixel_values" : img_tensor}
