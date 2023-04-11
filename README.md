@@ -20,7 +20,7 @@ Abstract: We address the challenging problem of Natural Language Comprehension b
 
 
 ## Modeling:
-* The modeling part of the pipeline, basically is inspired from [HuggingFace's T5 implementation](https://huggingface.co/docs/transformers/model_doc/t5), and the initialization of the weights are being done from the same. The code for the same is available in the `modeling.py` file.
+* The modeling part of the pipeline, basically is inspired from [HuggingFace's T5 implementation](https://huggingface.co/docs/transformers/model_doc/t5), and the initialization of the weights are being done from the same. The code for the same is available in the `src/t5.py` file.
 
 
 ## Examples:
