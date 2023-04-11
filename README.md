@@ -24,9 +24,19 @@ Abstract: We address the challenging problem of Natural Language Comprehension b
 
 
 ## Examples:
-* Would be adding the examples soon.
+* For finetuning TiLT on CORD, the example along with the results are present [here](https://github.com/uakarsh/TiLT-Implementation/blob/main/experiments/cord-tilt-part-4-1-abstractive-approach-for-t.ipynb)
+
+* Similarily, for finetuning TiLT on FUNSD, the example along with the results are present [here](https://github.com/uakarsh/TiLT-Implementation/blob/main/experiments/tilt-part-4-1-abstractive-approach-for-training.ipynb)
+
 
 ## My Results:
+| Model Name      | Dataset Name | Number of Parameters | Overall Precision | Overall Recall | Overall F1 Score | Overall Accuracy |
+|-----------------|--------------|----------------------|-------------------|----------------|------------------|------------------|
+| TILT            | FUNSD        |  225M                | 57.58             | 42.25          | 48.87            | 83.60            |
+| TILT            | CORD         |  225M                | 64.81             | 62.64          | 63.71            | 80.52            |
+| TILT(Original)  | CORD         |  230M                | ---               | ---            | 95.11            | ---              |
+
+Note, that in the case of my results on CORD, the model has not been pre-trained (the weights are intialized from the hugging face's implementation), and it has been trained for 30 epochs, while in the original paper, the authors have trained on 360,000 steps which is roughly equivalent to 360,000 / (8 * 100) = 360 epochs.
 
 ## Citation
 If you find this repository useful, please cite the following paper:
