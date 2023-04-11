@@ -36,7 +36,7 @@ Abstract: We address the challenging problem of Natural Language Comprehension b
 | TILT            | CORD         |  225M                | 64.81             | 62.64          | 63.71            | 80.52            |
 | TILT(Original)  | CORD         |  230M                | ---               | ---            | 95.11            | ---              |
 
-Note, that in the case of my results on CORD, the model has not been pre-trained (the weights are intialized from the hugging face's implementation), and it has been trained for 30 epochs, while in the original paper, the authors have trained on 360,000 steps which is roughly equivalent to 360,000 / (8 * 100) = 360 epochs.
+Note, that in the case of my results on CORD, the model has not been pre-trained (the weights are intialized from the hugging face's implementation), and it has been trained for 30 epochs, while in the original paper, the authors have trained on 360,000 steps which is roughly equivalent to 360,000 / (100) = 360 epochs. (100 comes from 800 / 8, since 8 is the batch size mentioned in the paper, and 800 are the training examples in the CORD dataset)
 
 ## Citation
 If you find this repository useful, please cite the following paper:
