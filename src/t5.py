@@ -213,7 +213,9 @@ class T5Attention(nn.Module):
             num_buckets=self.relative_attention_num_buckets,
             max_distance=self.relative_attention_max_distance,
         )
-
+        
+        ## It has to be like this : https://github.com/microsoft/i-Code/blob/d933ae53eb9dec057e605fa4c89ea701629c5b9d/i-Code-Doc/core/models/embedding/relative/relative.py#L175
+        ## so change is needed here
         v_distances_bucket = self._relative_position_bucket(
             v_distances,  # shape (query_length, key_length)
             bidirectional=(not self.is_decoder),
